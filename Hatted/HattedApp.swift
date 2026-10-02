@@ -13,6 +13,9 @@ struct HattedApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             GameData.self,
+            GamePlayer.self,
+            VotingCandidate.self,
+            DayNightCycle.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
