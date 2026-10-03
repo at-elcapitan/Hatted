@@ -9,6 +9,7 @@ import Foundation
 import SwiftData
 
 enum Role: Int, Codable, CaseIterable {
+    case unset
     case civilian
     case mafia
     case sheriff
@@ -24,6 +25,8 @@ enum Role: Int, Codable, CaseIterable {
             return "Sheriff"
         case .don:
             return "Don"
+        case .unset:
+            return "Unset"
         }
     }
 }

@@ -34,6 +34,8 @@ struct PlayerCircle: View {
             return .black
         case .civilian, .sheriff:
             return .interfaceMafiaCiv
+        case .unset:
+            return .gray
         }
     }
      
@@ -41,6 +43,7 @@ struct PlayerCircle: View {
         ZStack {
             Circle()
                 .frame(width: 50, height: 50)
+                .foregroundColor(color)
 
             Text("\(playerPosition)")
                 .foregroundStyle(.white)
@@ -63,10 +66,6 @@ struct PlayerCircle: View {
                 .offset(x: 6, y: -6)
             }
         }
-        .glassEffect(
-            .regular
-                .tint(color.opacity(0.4))
-        )
     }
 }
 

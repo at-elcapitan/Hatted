@@ -16,7 +16,7 @@ struct InitialMenu: View {
     private var games: [GameData]
 
     @State private var search: String = ""
-    @State private var showingCreateModal: Bool = false
+    @State private var showingCreateModal: Bool = true
 
     private var filteredItems: [GameData] {
         guard !search.isEmpty else {
@@ -129,10 +129,6 @@ struct EmptyGameList: View {
         .multilineTextAlignment(.center)
         .padding(24)
         .frame(maxWidth: .infinity)
-        .glassEffect(
-            .regular,
-            in: RoundedRectangle(cornerRadius: 20)
-        )
     }
 }
 
@@ -158,9 +154,12 @@ struct GameLink: View {
         }
         .padding(15)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .glassEffect(
-            .regular,
-            in: RoundedRectangle(cornerRadius: 20)
+        .background(
+            RoundedRectangle(
+                cornerRadius: 20,
+                style: .circular
+            )
+            .foregroundStyle(.interfaceBlack.opacity(0.05))
         )
     }
 }
@@ -170,7 +169,7 @@ struct GamePlayerDraft: Identifiable {
     let position: Int
 
     var name: String
-    var role: Role = .civilian
+    var role: Role = .unset
     
     init(position: Int, name: String = "") {
         self.position = position
@@ -190,37 +189,6 @@ struct CreateGameModal: View {
     
     @State private var draftPlayers: [GamePlayerDraft] = (1...10).map {
         GamePlayerDraft(position: Int($0))
-    }
-    private var civCount: Int {
-        draftPlayers.filter { $0.role == .civilian }.count
-    }
-    private var mafCount: Int {
-        draftPlayers.filter { $0.role == .mafia }.count
-    }
-    private var sherCount: Int {
-        draftPlayers.filter {
-            $0.role == .sheriff
-        }.count
-    }
-    private var donCount: Int {
-        draftPlayers.filter {
-            $0.role == .don
-        }.count
-    }
-    private var gameReady: Bool {
-        if civCount == 6 && mafCount == 2 &&
-            donCount == 1 && sherCount == 1 {
-            return true
-        }
-        
-        return false
-    }
-    private var submitColor: Color {
-        if gameReady {
-            return .interfaceGold
-        }
-        
-        return .gray
     }
     
     @State var gameName: String
@@ -242,17 +210,14 @@ struct CreateGameModal: View {
                     .font(.system(size: 30, weight: .bold))
                     
                     HStack {
-                        statusCard(number: civCount, of: 6, style: .civilian)
-                        Spacer()
-                        statusCard(number: mafCount, of: 2, style: .mafia)
-                        Spacer()
-                        statusCard(number: sherCount + donCount, of: 2, style: .active)
-                    }
-                    
-                    HStack {
                         VStack(spacing: 10) {
                             ForEach($draftPlayers) { $draftPlayer in
                                 PlayerCard(player: $draftPlayer)
+                                
+                                if draftPlayer.position != draftPlayers.count {
+                                    Divider()
+                                        .padding(.leading, 70)
+                                }
                             }
                         }
                         .padding(.vertical)
@@ -265,7 +230,6 @@ struct CreateGameModal: View {
                     ToolbarItem(placement: .topBarLeading) {
                         Button(action: discard) {
                             Image(systemName: "xmark")
-                                .foregroundStyle(.interfaceGold)
                         }
                     }
                     ToolbarItem(placement: .title) {
@@ -275,9 +239,9 @@ struct CreateGameModal: View {
                     ToolbarItem {
                         Button(action: submitGame) {
                             Image(systemName: "checkmark")
-                                .foregroundStyle(submitColor)
                         }
-                        .disabled(!gameReady)
+                        .buttonStyle(.borderedProminent)
+                        .tint(.interfaceGold)
                     }
                 }
             }
@@ -396,26 +360,9 @@ struct PlayerCard: View {
             )
             .autocorrectionDisabled()
             .font(.system(size: 16, weight: .bold))
-            
-            Spacer()
-            
-            Picker("", selection: $player.role) {
-                ForEach(Role.allCases, id: \.self) { role in
-                    Text(role.title)
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(.interfaceGold)
-                        .tag(role)
-                }
-            }
-            .pickerStyle(.menu)
-            .tint(.interfaceBlack)
         }
-        .padding(12)
+        .padding(3)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .glassEffect(
-            .regular,
-            in: RoundedRectangle(cornerRadius: 20)
-        )
     }
 }
 
