@@ -10,8 +10,8 @@ import SwiftUI
 struct PlayerCircle: View {
     let playerPosition: Int
     
-    @Binding var role: Role
-    @Binding var showColor: Bool
+    var role: Role
+    var showColor: Bool
     
     var iconName: String {
         switch role {
@@ -24,18 +24,18 @@ struct PlayerCircle: View {
         }
     }
     
-    var color: Color {
+    var color: Color {        
         if !showColor {
-            return .gray
+            return .gray.opacity(0.9)
         }
         
         switch role {
         case .don, .mafia:
-            return .black
+            return .interfaceMafiaMaf
         case .civilian, .sheriff:
             return .interfaceMafiaCiv
         case .unset:
-            return .gray
+            return .gray.opacity(0.6)
         }
     }
      
@@ -44,11 +44,17 @@ struct PlayerCircle: View {
             Circle()
                 .frame(width: 50, height: 50)
                 .foregroundColor(color)
+                .animation(
+                    .easeInOut(duration: 0.35),
+                    value: color
+                )
 
             Text("\(playerPosition)")
                 .foregroundStyle(.white)
                 .font(.system(size: 26, weight: .bold))
+                .contentTransition(.numericText())
         }
+        .animation(.snappy, value: playerPosition)
         .overlay(alignment: .topTrailing) {
             if role == .sheriff || role == .don && showColor {
                 ZStack {
@@ -64,6 +70,11 @@ struct PlayerCircle: View {
                     in: .circle
                 )
                 .offset(x: 6, y: -6)
+                .transition(.scale.combined(with: .opacity))
+                .animation(
+                    .easeInOut(duration: 0.3),
+                    value: role
+                )
             }
         }
     }
@@ -72,12 +83,22 @@ struct PlayerCircle: View {
 #Preview {
     PlayerCircle(
         playerPosition: 10,
-        role: .constant(Role.sheriff),
-        showColor: .constant(true)
+        role: Role.sheriff,
+        showColor: true
     )
     PlayerCircle(
         playerPosition: 10,
-        role: .constant(Role.don),
-        showColor: .constant(true)
+        role: Role.don,
+        showColor: true
+    )
+    PlayerCircle(
+        playerPosition: 10,
+        role: Role.unset,
+        showColor: true
+    )
+    PlayerCircle(
+        playerPosition: 10,
+        role: Role.unset,
+        showColor: true
     )
 }

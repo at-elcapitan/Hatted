@@ -41,7 +41,7 @@ struct InitialMenu: View {
                     if !games.isEmpty {
                         ForEach(filteredItems) { game in
                             NavigationLink {
-                                Game()
+                                Game(game: game)
                             } label: {
                                 GameLink(
                                     gameName: game.gameName,
@@ -205,14 +205,13 @@ struct CreateGameModal: View {
                         "Game name",
                         text: $gameName
                     )
-                    .padding(.vertical, 10)
                     .autocorrectionDisabled()
                     .font(.system(size: 30, weight: .bold))
                     
                     HStack {
                         VStack(spacing: 10) {
                             ForEach($draftPlayers) { $draftPlayer in
-                                PlayerCard(player: $draftPlayer)
+                                DraftPlayerCard(player: $draftPlayer)
                                 
                                 if draftPlayer.position != draftPlayers.count {
                                     Divider()
@@ -226,27 +225,26 @@ struct CreateGameModal: View {
                 }
                 .scrollClipDisabled()
                 .padding(.horizontal)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button(action: discard) {
-                            Image(systemName: "xmark")
-                        }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: discard) {
+                        Image(systemName: "xmark")
                     }
-                    ToolbarItem(placement: .title) {
-                        Text("New Game")
-                            .font(.system(size: 18, weight: .bold))
+                }
+                ToolbarItem(placement: .title) {
+                    Text("New Game")
+                        .font(.system(size: 18, weight: .bold))
+                }
+                ToolbarItem {
+                    Button(action: submitGame) {
+                        Image(systemName: "checkmark")
                     }
-                    ToolbarItem {
-                        Button(action: submitGame) {
-                            Image(systemName: "checkmark")
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.interfaceGold)
-                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.interfaceGold)
                 }
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .presentationBackground(
             Color.interfaceBackground
         )
@@ -279,90 +277,6 @@ struct CreateGameModal: View {
             game.players.append(gamePlayer)
             dismiss()
         }
-    }
-}
-
-
-// MARK: - Status Card
-enum statusCardStyle: Int {
-    case civilian
-    case mafia
-    case active
-    
-    var text: String {
-        switch self {
-        case .civilian:
-            return "Civilians"
-        case .mafia:
-            return "Mafia"
-        case .active:
-            return "Active"
-        }
-    }
-    
-    var color: Color {
-        switch self {
-        case .civilian:
-            return .interfaceMafiaCiv.opacity(0.9)
-        case .mafia:
-            return .interfaceMafiaMaf
-        case .active:
-            return .white.opacity(0.2)
-        }
-    }
-}
-
-struct statusCard: View {
-    var number: Int
-    let of: Int
-    let style: statusCardStyle
-    
-    var foreground: Color {
-        if style == statusCardStyle.active {
-            return .interfaceBlack
-        }
-        
-        return .white
-    }
-    
-    var body: some View {
-        VStack {
-            Text("\(number)/\(of)")
-                .font(.system(size: 24, weight: .bold))
-            Text(style.text)
-                .font(.subheadline)
-        }
-        .foregroundStyle(foreground)
-        .frame(width: 110, height: 80)
-        .glassEffect(
-            .regular
-                .tint(style.color),
-            in: RoundedRectangle(cornerRadius: 20)
-        )
-    }
-}
-
-// MARK: - Player Card
-struct PlayerCard: View {
-    @Binding var player: GamePlayerDraft
-    
-    var body: some View {
-        HStack(spacing: 20) {
-            PlayerCircle(
-                playerPosition: player.position,
-                role: $player.role,
-                showColor: .constant(true)
-            )
-            
-            TextField(
-                "Player name",
-                text: $player.name
-            )
-            .autocorrectionDisabled()
-            .font(.system(size: 16, weight: .bold))
-        }
-        .padding(3)
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

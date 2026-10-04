@@ -12,6 +12,7 @@ enum GameState: Int, Codable {
     case day
     case night
     case setup
+    case roles
 }
 
 @Model
@@ -20,6 +21,7 @@ final class VotingCandidate {
     var nominator: GamePlayer
     var day: DayNightCycle
     var votes: Int8
+    var playerWasDeleted: Bool = false
 
     init(
         candidate: GamePlayer,
@@ -47,8 +49,6 @@ final class DayNightCycle {
     )
     var nominations: [VotingCandidate] = []
     
-    var playerWasDeleted: Bool = false
-    
     init(
         game: GameData,
         playerKilled: GamePlayer? = nil,
@@ -66,6 +66,7 @@ final class DayNightCycle {
 
 @Model
 final class GameData {
+    @Attribute(.unique) var id: UUID = UUID()
     var gameName: String
     var gameDate: Date
     
@@ -74,6 +75,12 @@ final class GameData {
         inverse: \GamePlayer.game
     )
     var players: [GamePlayer] = []
+    
+    var sortedPlayers: [GamePlayer] {
+        players.sorted {
+            $0.playerPosition < $1.playerPosition
+        }
+    }
     
     @Relationship(
         deleteRule: .cascade,
@@ -84,24 +91,36 @@ final class GameData {
     var currentDay: Int {
         days.count
     }
+    
+    var deadPlayers: [GamePlayer] = []
 
     init(
         gameName: String,
         gameDate: Date,
-        players: [GamePlayer] = [],
-        days: [DayNightCycle] = []
+        players: [GamePlayer] = []
     ) {
         self.gameName = gameName
         self.gameDate = gameDate
         self.players = players
-        self.days = days
     }
     
-    var alivePlayers: [GamePlayer] {
-        players.filter{ $0.playerRemoveReason == nil }
-    }
-    
-    var deadPlayers: [GamePlayer] {
-        players.filter { $0.playerRemoveReason != nil }
+    static var preview: GameData {
+        let game: GameData = GameData(
+            gameName: "Preview Game",
+            gameDate: .now
+        )
+        
+        let players: [GamePlayer] = (1...10).map {
+            GamePlayer(
+                playerName: "Player",
+                game: game,
+                role: .unset,
+                playerPosition: $0
+            )
+        }
+        
+        game.players = players
+        
+        return game
     }
 }

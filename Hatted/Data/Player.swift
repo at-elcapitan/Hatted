@@ -26,7 +26,7 @@ enum Role: Int, Codable, CaseIterable {
         case .don:
             return "Don"
         case .unset:
-            return "Unset"
+            return "No role"
         }
     }
 }
@@ -66,8 +66,17 @@ final class GamePlayer {
     var role: Role
     var playerPosition: Int
     
-    var fouls: UInt8 = 0
-    var playerRemoveReason: Reason?
+    var fouls: Int = 0
+    var ppk: Bool = false
+    var playerDead: Bool = false
+    
+    var playerRemoved: Bool {
+        if fouls > 3 || ppk || playerDead {
+            return true
+        }
+        
+        return false
+    }
     
     @Relationship(
         deleteRule: .nullify,
