@@ -51,7 +51,7 @@ struct RoleSetup: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: 15) {
             HStack(spacing: 10) {
                 PlayerCircle(
                     playerPosition: currentPlayer.playerPosition,
@@ -62,15 +62,18 @@ struct RoleSetup: View {
                     .font(.system(size: 20, weight: .bold))
             }
             
-            HStack(spacing: 20) {
+            Divider()
+                .padding(.horizontal, 10)
+            
+            HStack {
                 Button(action: {
                     setRole(role: .civilian)
                 }) {
                     HStack {
                         Image(systemName: "person.fill")
                     }
-                    .frame(width: 60, height: 60)
-                    .font(.system(size: 20, weight: .bold))
+                    .frame(width: 70, height: 70)
+                    .font(.system(size: 24, weight: .bold))
                     .foregroundStyle(.white)
                     .background(
                         RoundedRectangle(
@@ -80,8 +83,9 @@ struct RoleSetup: View {
                     )
                 }
                 .buttonStyle(.plain)
-                .buttonBorderShape(.roundedRectangle(radius: 16))
                 .disabled(civDisabled)
+                
+                Spacer()
                 
                 Button(action: {
                     setRole(role: .sheriff)
@@ -89,9 +93,9 @@ struct RoleSetup: View {
                     HStack {
                         Image(systemName: "star.fill")
                     }
-                    .frame(width: 60, height: 60)
+                    .frame(width: 70, height: 70)
+                    .font(.system(size: 24, weight: .bold))
                     .foregroundStyle(.white)
-                    .font(.system(size: 20, weight: .bold))
                     .background(
                         RoundedRectangle(
                             cornerRadius: 20
@@ -100,8 +104,9 @@ struct RoleSetup: View {
                     )
                 }
                 .buttonStyle(.plain)
-                .buttonBorderShape(.roundedRectangle(radius: 16))
                 .disabled(sheriffDisabled)
+                
+                Spacer()
                 
                 Button(action: {
                     setRole(role: .mafia)
@@ -109,8 +114,8 @@ struct RoleSetup: View {
                     HStack {
                         Image(systemName: "person.fill")
                     }
-                    .frame(width: 60, height: 60)
-                    .font(.system(size: 20, weight: .bold))
+                    .frame(width: 70, height: 70)
+                    .font(.system(size: 24, weight: .bold))
                     .foregroundStyle(.white)
                     .background(
                         RoundedRectangle(
@@ -120,8 +125,9 @@ struct RoleSetup: View {
                     )
                 }
                 .buttonStyle(.plain)
-                .buttonBorderShape(.roundedRectangle(radius: 16))
                 .disabled(mafiaDisabled)
+                
+                Spacer()
                 
                 Button(action: {
                     setRole(role: .don)
@@ -129,8 +135,8 @@ struct RoleSetup: View {
                     HStack {
                         Image(systemName: "crown.fill")
                     }
-                    .frame(width: 60, height: 60)
-                    .font(.system(size: 20, weight: .bold))
+                    .frame(width: 70, height: 70)
+                    .font(.system(size: 24, weight: .bold))
                     .foregroundStyle(.white)
                     .background(
                         RoundedRectangle(
@@ -140,7 +146,6 @@ struct RoleSetup: View {
                     )
                 }
                 .buttonStyle(.plain)
-                .buttonBorderShape(.roundedRectangle(radius: 16))
                 .disabled(donDisabled)
             }
             
@@ -163,8 +168,9 @@ struct RoleSetup: View {
                     )
                 }
                 .buttonStyle(.plain)
-                .buttonBorderShape(.roundedRectangle(radius: 16))
                 .disabled(currentPlayerSelected == 0)
+                
+                Spacer()
                 
                 Button(action: {
                     save()
@@ -184,11 +190,10 @@ struct RoleSetup: View {
                     )
                 }
                 .buttonStyle(.plain)
-                .buttonBorderShape(.roundedRectangle(radius: 16))
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(15)
-        .frame(maxWidth: .infinity)
         .background(
             RoundedRectangle(
                 cornerRadius: 40,

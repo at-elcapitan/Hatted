@@ -27,6 +27,7 @@ struct GameMain: View {
         ScrollView{
             VStack(spacing: 15) {
                 RoleSetup(players: game.sortedPlayers)
+                    .frame(maxWidth: .infinity)
                 
                 HStack {
                     statusCard(number: civCount, of: 6, style: .civilian)
@@ -35,7 +36,7 @@ struct GameMain: View {
                     Spacer()
                     statusCard(number: actCount, of: 2, style: .active)
                 }
-                .padding(15)
+                .padding(.horizontal, 30)
                 
                 PlayersList(game: game)
             }
