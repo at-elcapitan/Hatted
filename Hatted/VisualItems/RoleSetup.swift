@@ -190,6 +190,8 @@ struct RoleSetup: View {
                     )
                 }
                 .buttonStyle(.plain)
+                .buttonBorderShape(.roundedRectangle(radius: 16))
+                .disabled(currentPlayer.role == .unset)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
